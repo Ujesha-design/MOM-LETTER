@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Birthday Surprise</title>
+<style>
+body {
+  margin: 0;
+  overflow: hidden;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 50%, #fad0c4 100%);
+}
+
+/* Floating Hearts */
+.heart {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: #ff2d55;
+  transform: rotate(45deg);
+  animation: floatUp linear infinite;
+}
+.heart::before,
+.heart::after {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  background: #ff2d55;
+  border-radius: 50%;
+}
+.heart::before { top: -12px; left: 0; }
+.heart::after  { left: -12px; top: 0; }
+
+@keyframes floatUp {
+  0%   { transform: translateY(100vh) rotate(45deg); opacity: 1; }
+  100% { transform: translateY(-30vh) rotate(45deg); opacity: 0; }
+}
+
+/* Center Letter */
+.letter {
+  width: 120px;
+  height: 80px;
+  background: #fff;
+  border: 3px solid #ff2d55;
+  border-radius: 5px;
+  position: relative;
+  cursor: pointer;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 40px;
+  animation: bounce 1.5s infinite;
+  transition: opacity 0.5s, transform 0.5s;
+}
+
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
+}
+
+/* Envelope flap */
+.flap {
+  position: absolute;
+  top: -15px;
+  left: 0;
+  width: 100%;
+  height: 40px;
+  background: #ff2d55;
+  clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+  transform-origin: top;
+  transition: transform 0.5s;
+}
+
+/* Modal for birthday message */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.modal.show {
+  visibility: visible;
+  opacity: 1;
+}
+
+.modal-content {
+  background: #fff;
+  color: #ff2d55;
+  padding: 40px;
+  border-radius: 15px;
+  max-width: 500px;
+  text-align: left;
+  font-size: 1.1rem;
+  line-height: 1.5;
+  position: relative;
+  box-shadow: 0 0 25px rgba(255,45,85,0.7);
+}
+
+.modal-content .close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  cursor: pointer;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+/* Confetti */
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  background: #ff2d55;
+  opacity: 0.8;
+  transform: rotate(0deg);
+  animation: fall 3s linear forwards;
+}
+
+@keyframes fall {
+  0% { transform: translateY(0) rotate(0deg); opacity:1; }
+  100% { transform: translateY(100vh) rotate(360deg); opacity:0; }
+}
+</style>
+</head>
+<body>
+
+<!-- Center Letter -->
+<div class="letter">
+  <div class="flap"></div>
+  ✉️
+</div>
+
+<!-- Birthday Modal -->
+<div class="modal" id="letterModal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <p>My Love,</p>
+    <p>Happy Birthday, my everything. 💖<br>
+    You have no idea how much I love you… how every little thing about you drives me crazy in the best way. Your laugh, your touch, your voice—everything about you is mine, and I never want to let go.</p>
+    <p>Today, I get to celebrate you, the man who owns my heart, my thoughts, my every waking moment. Maybe I'm not perfect 100% but I'll be perfect for you, I'll make things right. I want you to feel how deep my love goes, how much I crave you—not just today, but every day. You’re not just my boyfriend… you’re my world, my obsession, my forever.</p>
+    <p>You are the reason for my laugh. Remember, no one could ever have you like I do. You’re mine, and I’ll make sure you never forget it. 💋🔥</p>
+    <p>Yours, always loving,<br>Ujesha</p>
+  </div>
+</div>
+
+<script>
+// Floating hearts
+function makeHeart() {
+  const heart = document.createElement("div");
+  heart.classList.add("heart");
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.animationDuration = 3 + Math.random() * 3 + "s";
+  heart.style.width = heart.style.height = (20 + Math.random() * 30) + "px";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 6000);
+}
+for (let i = 0; i < 30; i++) makeHeart();
+setInterval(makeHeart, 300);
+
+// Confetti explosion
+function makeConfetti() {
+  for(let i=0; i<50; i++){
+    const c = document.createElement("div");
+    c.classList.add("confetti");
+    c.style.left = Math.random() * window.innerWidth + "px";
+    c.style.background = `hsl(${Math.random()*360}, 100%, 50%)`;
+    document.body.appendChild(c);
+    setTimeout(()=> c.remove(), 3000);
+  }
+}
+
+// Letter click logic
+const letter = document.querySelector('.letter');
+const flap = document.querySelector('.flap');
+const modal = document.getElementById('letterModal');
+const close = document.querySelector('.close');
+
+function showLetter() {
+  letter.style.opacity = 1;
+  letter.style.transform = 'scale(1)';
+  flap.style.transform = 'rotateX(0deg)';
+}
+
+letter.addEventListener('click', () => {
+  flap.style.transform = 'rotateX(180deg)';
+  letter.style.opacity = 0;
+  letter.style.transform = 'scale(0.5)';
+  makeConfetti();
+  setTimeout(() => modal.classList.add('show'), 500);
+});
+
+close.addEventListener('click', () => {
+  modal.classList.remove('show');
+  // Show letter again
+  setTimeout(showLetter, 300);
+});
+
+modal.addEventListener('click', (e) => {
+  if(e.target === modal){
+    modal.classList.remove('show');
+    setTimeout(showLetter, 300);
+  }
+});
+</script>
+
+</body>
+</html>
